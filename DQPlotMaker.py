@@ -143,33 +143,38 @@ class DQPlotMaker():
             Row with relevant information from the pickle.
         """
         # Get the Line Number from file name assuming naming convention.
-        line = int(re.search(r'_line_(.*?)_camera_(.*?).pickle', FileName).group(1))
-        batch= int(re.search(r'_line_(.*?)_camera_(.*?).pickle', FileName).group(2))
-        # Read the Data
-        data = DQReadPickle(FileName)
-        # Prepare the Astropy Row
-        table = Table()
-        table['line'] = np.array([line], dtype=int) # In this way Table length is set =1
-        table['batch']= np.array([batch],dtype=int)
-        #table['file'] = np.array([FileName], dtype=str) # This string is very long
+        log.info(f"Reading file {FileName}")
+        line = int(re.search(r'_line_(.*?)_(.*?).pickle', FileName).group(1))
+        batch_info= re.search(r'_line_(.*?)_(.*?).pickle', FileName).group(2).split("_")
+        if str(batch_info[0]) == "camera":
+            batch = int(batch_info[1])
+            # Read the Data
+            data = DQReadPickle(FileName)
+            # Prepare the Astropy Row
+            table = Table()
+            table['line'] = np.array([line], dtype=int) # In this way Table length is set =1
+            table['batch']= np.array([batch],dtype=int)
+            #table['file'] = np.array([FileName], dtype=str) # This string is very long
 
-        # Scalar columns
-        table['_start_time'] = data['events'][0]['_start_time']
-        table['_end_time'  ] = data['events'][0]['_end_time']
-        table['rate'       ] = data['events'][0]['rate']
-        table['cum_rate'   ] = data['events'][0]['cum_rate']
-        # Vector columns
-        table['camera_sum']=[data['events'][0]['camera_sum']]
-        table['camera_sum_of_squares']=[data['events'][0]['camera_sum_of_squares']]
-        #table['camera_pixels_charges_distributions']=[data['events'][0]['camera_pixels_charges_distributions']]
-        
-        #log.info(f"File: {FileName}")
-        #log.info(f'DL1 time interval = [{data["events"][0]["_start_time"]}, {data["events"][0]["_end_time"]}] seconds')
-        #log.info(f'DL1 event rate = {data["events"][0]["rate"]}')
-        
-        # Return the results as a Row (not Table) object.
-        DataRow = table[0]
-        return DataRow
+            # Scalar columns
+            table['_start_time'] = data['events'][0]['_start_time']
+            table['_end_time'  ] = data['events'][0]['_end_time']
+            table['rate'       ] = data['events'][0]['rate']
+            table['cum_rate'   ] = data['events'][0]['cum_rate']
+            # Vector columns
+            table['camera_sum']=[data['events'][0]['camera_sum']]
+            table['camera_sum_of_squares']=[data['events'][0]['camera_sum_of_squares']]
+            #table['camera_pixels_charges_distributions']=[data['events'][0]['camera_pixels_charges_distributions']]
+            
+            #log.info(f"File: {FileName}")
+            #log.info(f'DL1 time interval = [{data["events"][0]["_start_time"]}, {data["events"][0]["_end_time"]}] seconds')
+            #log.info(f'DL1 event rate = {data["events"][0]["rate"]}')
+            
+            # Return the results as a Row (not Table) object.
+            DataRow = table[0]
+            return DataRow
+        else:
+            return None
     
     
     def PickleToRowAnalysisHillas(self, FileName : str):
@@ -188,38 +193,42 @@ class DQPlotMaker():
             Row with relevant information from the pickle.
         """
         # Get the Line Number from file name assuming naming convention.
-        line = int(re.search(r'_line_(.*?)_hillas_(.*?).pickle', FileName).group(1))
-        batch= int(re.search(r'_line_(.*?)_hillas_(.*?).pickle', FileName).group(2))
-        # Read the Data
-        data = DQReadPickle(FileName)
-        # Prepare the Astropy Row
-        table = Table()
-        table['line'] = np.array([line], dtype=int) # In this way Table length is set =1
-        table['batch']= np.array([batch],dtype=int)
-        #table['file'] = np.array([FileName], dtype=str) # This string is very long
-        
-        # Scalar columns
-        table['_start_time'] = data['events'][0]['_start_time']
-        table['_end_time'  ] = data['events'][0]['_end_time']
-        table['rate'       ] = data['events'][0]['rate']
-        table['cum_rate'   ] = data['events'][0]['cum_rate']
-        
-        ## Distribution columns
-        table['intensity_distribution']=[data['events'][0]['intensity_distribution']]
-        table['kurtosis_distribution' ]=[data['events'][0]['kurtosis_distribution']]
-        table['length_distribution'   ]=[data['events'][0]['length_distribution']]
-        table['phi_distribution'      ]=[data['events'][0]['phi_distribution']]
-        table['psi_distribution'      ]=[data['events'][0]['psi_distribution']]
-        table['r_distribution'        ]=[data['events'][0]['r_distribution']]
-        table['skewness_distribution' ]=[data['events'][0]['skewness_distribution']]
-        table['width_distribution'    ]=[data['events'][0]['width_distribution']]
-        
-        ## Sample columns
-        ## Correlation columns
-        
-        # Return the results as a Row (not Table) object.
-        DataRow = table[0]
-        return DataRow
+        line = int(re.search(r'_line_(.*?)_(.*?).pickle', FileName).group(1))
+        batch_info= re.search(r'_line_(.*?)_(.*?).pickle', FileName).group(2).split("_")
+        if str(batch_info[0]) == "hillas":
+            batch = int(batch_info[1])
+            # Read the Data
+            data = DQReadPickle(FileName)
+            # Prepare the Astropy Row
+            table = Table()
+            table['line'] = np.array([line], dtype=int) # In this way Table length is set =1
+            table['batch']= np.array([batch],dtype=int)
+            #table['file'] = np.array([FileName], dtype=str) # This string is very long
+            
+            # Scalar columns
+            table['_start_time'] = data['events'][0]['_start_time']
+            table['_end_time'  ] = data['events'][0]['_end_time']
+            table['rate'       ] = data['events'][0]['rate']
+            table['cum_rate'   ] = data['events'][0]['cum_rate']
+            
+            ## Distribution columns
+            table['intensity_distribution']=[data['events'][0]['intensity_distribution']]
+            table['kurtosis_distribution' ]=[data['events'][0]['kurtosis_distribution']]
+            table['length_distribution'   ]=[data['events'][0]['length_distribution']]
+            table['phi_distribution'      ]=[data['events'][0]['phi_distribution']]
+            table['psi_distribution'      ]=[data['events'][0]['psi_distribution']]
+            table['r_distribution'        ]=[data['events'][0]['r_distribution']]
+            table['skewness_distribution' ]=[data['events'][0]['skewness_distribution']]
+            table['width_distribution'    ]=[data['events'][0]['width_distribution']]
+            
+            ## Sample columns
+            ## Correlation columns
+            
+            # Return the results as a Row (not Table) object.
+            DataRow = table[0]
+            return DataRow
+        else:
+            return None
     
     def PickleToRowAggregationCamera(self, FileName : str):
         """
@@ -436,8 +445,8 @@ class DQPlotMaker():
         # Define the Specific Input and Output Paths
         # for the Analysis/Aggregation, Camera/Hillas results from the general
         # Input and Output Directories
-        DataDirectoryInput =  self.InputDirectory.joinpath(f"dq_{DQResultType}_output/{DL1Class}")
-        DataDirectoryOutput= self.OutputDirectory.joinpath(f"dq_{DQResultType}_output/{DL1Class}")
+        DataDirectoryInput =  self.InputDirectory.joinpath(f"{DQResultType}")
+        DataDirectoryOutput= self.OutputDirectory.joinpath(f"dq_{DQResultType}_plots/{DL1Class}")
         DataDirectoryOutput.mkdir(exist_ok=True, parents=True)
         log.info(f"Looking into {DataDirectoryInput}")
         
@@ -449,13 +458,13 @@ class DQPlotMaker():
         # Build the Table with .pickle data row by row
         # Each row is read from a different pickle file
         if DQResultType=='analysis' and DL1Class=='camera':
-            DataRows = [self.PickleToRowAnalysisCamera(file) for file in FileList]
+            DataRows = [self.PickleToRowAnalysisCamera(file) for file in FileList if self.PickleToRowAnalysisCamera(file) is not None]
         elif DQResultType=='analysis' and DL1Class=='hillas':
-            DataRows = [self.PickleToRowAnalysisHillas(file) for file in FileList]
+            DataRows = [self.PickleToRowAnalysisHillas(file) for file in FileList if self.PickleToRowAnalysisHillas(file) is not None]
         elif DQResultType=='aggregation' and DL1Class=='camera':
-            DataRows = [self.PickleToRowAggregationCamera(file) for file in FileList]
+            DataRows = [self.PickleToRowAggregationCamera(file) for file in FileList if self.PickleToRowAggregationCamera(file) is not None]
         elif DQResultType=='aggregation' and DL1Class=='hillas':
-            DataRows = [self.PickleToRowAggregationHillas(file) for file in FileList]
+            DataRows = [self.PickleToRowAggregationHillas(file) for file in FileList if self.PickleToRowAggregationHillas(file) is not None]
         
         # Join all the Rows in a single Table
         DataTable = Table(rows=DataRows, names=DataRows[0].keys(),
