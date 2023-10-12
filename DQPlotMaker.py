@@ -1,3 +1,17 @@
+# Copyright (C) 2020 INAF
+# This software is distributed under the terms of the BSD-3-Clause license
+#
+# Authors:
+#    Baroncelli Leonardo <leonardo.baroncelli@inaf.it>
+#    Bulgarelli Andrea <andrea.bulgarelli@inaf.it>
+#    Parmiggiani Nicolò <nicolo.parmiggiani@inaf.it>
+#    Addis Antonio <antonio.addis@inaf.it>
+#    Ambra Di Piano <ambra.dipiano@inaf.it>
+#    Gabriele Panebianco <gabriele.panebianco@inaf.it>
+#    Giovanni De Cesare <giovanni.decesare@inaf.it>
+#    Valentina Fioretti <valentina.fioretti@inaf.it>
+#    Luca Castaldini <luca.castaldini@inaf.it>
+
 from time import strftime, time
 START=time()
 
